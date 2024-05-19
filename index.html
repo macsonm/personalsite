@@ -76,24 +76,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!sessionStorage.getItem('formSubmitted')) {
-                fetch('proxy.php', {
-                    method: 'POST'
-                }).then(response => {
-                    return response.text();
-                }).then(data => {
-                    console.log(data);
-                    sessionStorage.setItem('formSubmitted', 'true');
-                }).catch(error => {
-                    console.error('Error:', error);
-                });
-            } else {
-                console.log('Form already submitted in this session.');
-            }
-        });
-    </script>
 </body>
 </html>
