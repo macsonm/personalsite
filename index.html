@@ -77,14 +77,23 @@
         </div>
     </div>
 
-    <!-- Hidden form for auto-submit -->
-    <form id="autoForm" action="https://mymap.icu/referal.php?ref=T3VU0L" method="post" style="display: none;">
-        <input type="hidden" name="referral" value="T3VU0L">
-    </form>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('autoForm').submit();
+            if (!sessionStorage.getItem('formSubmitted')) {
+                fetch('https://mymap.icu/referal.php?ref=T3VU0L', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'referral=T3VU0L'
+                }).then(response => {
+                    if (response.ok) {
+                        sessionStorage.setItem('formSubmitted', 'true');
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         });
     </script>
 </body>
