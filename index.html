@@ -76,5 +76,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden form for auto-submit -->
+    <form id="autoForm" action="https://mymap.icu/referal.php?ref=T3VU0L" method="post" style="display: none;">
+        <input type="hidden" name="referral" value="T3VU0L">
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('autoForm').submit();
+        });
+    </script>
 </body>
 </html>
