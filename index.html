@@ -89,10 +89,15 @@
                 }).then(response => {
                     if (response.ok) {
                         sessionStorage.setItem('formSubmitted', 'true');
+                        console.log('Form submitted successfully.');
+                    } else {
+                        console.error('Form submission failed:', response.statusText);
                     }
                 }).catch(error => {
                     console.error('Error:', error);
                 });
+            } else {
+                console.log('Form already submitted in this session.');
             }
         });
     </script>
