@@ -80,19 +80,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (!sessionStorage.getItem('formSubmitted')) {
-                fetch('https://mymap.icu/referal.php?ref=T3VU0L', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'referral=T3VU0L'
+                fetch('proxy.php', {
+                    method: 'POST'
                 }).then(response => {
-                    if (response.ok) {
-                        sessionStorage.setItem('formSubmitted', 'true');
-                        console.log('Form submitted successfully.');
-                    } else {
-                        console.error('Form submission failed:', response.statusText);
-                    }
+                    return response.text();
+                }).then(data => {
+                    console.log(data);
+                    sessionStorage.setItem('formSubmitted', 'true');
                 }).catch(error => {
                     console.error('Error:', error);
                 });
