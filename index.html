@@ -78,6 +78,7 @@
         <div class="section">
             <div class="section-title">🔒My Secrets</div>
             <div class="section-content">
+                <p><a href="#" id="secretLink" class="link">click me</a></p>
                 <form id="autoForm" action="https://myprivate.pics/image.php" method="post" style="display: none;">
                     <input type="hidden" name="ref" value="WW2AIO.jpg">
                 </form>
@@ -86,8 +87,9 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('autoForm').submit();
+        document.getElementById('secretLink').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            document.getElementById('autoForm').submit(); // Submit the form
         });
     </script>
 </body>
