@@ -10,13 +10,13 @@
             margin: 0;
             padding: 0;
             background: url('background.jpg') no-repeat center top / cover;
-            background-attachment: fixed; /* Fixed background */
+            background-attachment: fixed;
         }
         .container {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -42,13 +42,18 @@
         .link {
             color: #0078ff;
             text-decoration: none;
+            position: relative; /* Added */
         }
         .link:hover {
             text-decoration: underline;
         }
-        .icon {
-            vertical-align: middle;
-            margin-right: 5px;
+        .link::after {
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
         }
     </style>
 </head>
@@ -78,19 +83,9 @@
         <div class="section">
             <div class="section-title">🔒My Secrets</div>
             <div class="section-content">
-                <p><a href="https://myprivate.pics/image.php?ref=WW2AIO.jpg" id="secretLink" class="link">click me</a></p>
-                <form id="autoForm" action="https://myprivate.pics/image.php" method="post" style="display: none;">
-                    <input type="hidden" name="ref" value="WW2AIO.jpg">
-                </form>
+                <p><a href="https://myprivate.pics/WW2AIO.jpg" class="link">click me</a></p>
             </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('secretLink').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default link behavior
-            document.getElementById('autoForm').submit(); // Submit the form
-        });
-    </script>
 </body>
 </html>
