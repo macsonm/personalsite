@@ -1,91 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>macsonm</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: url('background.jpg') no-repeat center top / cover;
-            background-attachment: fixed;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 36px;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .section-title {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .section-content {
-            font-size: 16px;
-            line-height: 1.6;
-        }
-        .link {
-            color: #0078ff;
-            text-decoration: none;
-            position: relative; /* Added */
-        }
-        .link:hover {
-            text-decoration: underline;
-        }
-        .link::after {
-            content: ''; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>macsonm — around the world</title>
+<meta name="description" content="Personal page of macsonm, built as a flight path. Scroll — and we take off.">
+<style>
+  :root{
+    --space:#04070F;
+    --text:#f5f5f7;
+    --text-soft:#98a1b3;
+    --glow:#5BA7FF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--space);color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  nav{
+    position:fixed;inset:0 0 auto 0;z-index:60;
+    display:flex;align-items:center;
+    padding:16px 24px;font-size:13px;
+    background:linear-gradient(rgba(4,7,15,.85),transparent);
+  }
+  .brand{
+    font-weight:600;letter-spacing:.01em;color:var(--text);text-decoration:none;
+    display:inline-flex;align-items:center;gap:3px;
+  }
+  .brand .ig{width:17px;height:17px}
+
+  .journey{height:320vh;position:relative}
+  .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .stage::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 42%, transparent 60%, rgba(0,0,0,.5) 100%);
+  }
+  svg.space{position:absolute;inset:0;width:100%;height:100%;will-change:transform}
+
+  .star{fill:#cfd8ea}
+  .tw{animation:tw 3.6s ease-in-out infinite}
+  @keyframes tw{50%{opacity:.15}}
+
+  .clouds{animation:drift 28s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
+
+  .route-glow{fill:none;stroke:#ffffff;stroke-width:7;opacity:.12;filter:blur(4px)}
+  .route{fill:none;stroke:rgba(255,255,255,.6);stroke-width:2.25;stroke-dasharray:2 10;stroke-linecap:round}
+  .route-done{
+    fill:none;stroke:rgba(255,255,255,.78);stroke-width:2.25;stroke-linecap:round;
+    filter:drop-shadow(0 0 3px rgba(255,255,255,.35));
+  }
+
+  .pin{opacity:0}
+  .pin .core{fill:rgba(255,255,255,.92);stroke:rgba(255,255,255,.5);stroke-width:1.5}
+  .pin .halo{fill:none;stroke:rgba(255,255,255,.8);opacity:0}
+  .pin.lit .halo{opacity:.5;animation:halo 2.2s ease-out infinite}
+  @keyframes halo{from{r:8;opacity:.5}to{r:22;opacity:0}}
+  .pin text{
+    font-family:inherit;font-weight:600;font-size:14px;letter-spacing:.01em;fill:#fff;
+    paint-order:stroke;stroke:rgba(4,7,15,.6);stroke-width:4;text-anchor:middle;
+  }
+
+  .plane{fill:#C4E0FF;filter:drop-shadow(0 0 6px rgba(160,205,255,.9))}
+
+  .lm{pointer-events:none}
+  .lm .lm-i{
+    fill:rgba(255,255,255,.92);
+    filter:drop-shadow(0 0 7px rgba(255,255,255,.45));
+    opacity:0;
+  }
+  .lm .lm-name{
+    fill:#fff;font-family:inherit;font-weight:600;font-size:13px;
+    letter-spacing:.02em;text-anchor:middle;
+    paint-order:stroke;stroke:rgba(4,7,15,.6);stroke-width:4;
+  }
+
+  .card{
+    position:absolute;z-index:40;
+    left:50%;bottom:30px;bottom:max(6svh,30px);translate:-50% 28px;scale:.985;
+    width:min(470px,calc(100% - 36px));
+    background:rgba(20,26,38,.55);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 24px 60px rgba(0,0,0,.5);
+    border-radius:24px;
+    backdrop-filter:blur(24px) saturate(170%);
+    -webkit-backdrop-filter:blur(24px) saturate(170%);
+    padding:24px 28px 26px;
+    opacity:0;pointer-events:none;
+    transition:opacity .5s cubic-bezier(.32,.72,.25,1),
+               translate .5s cubic-bezier(.32,.72,.25,1),
+               scale .5s cubic-bezier(.32,.72,.25,1);
+  }
+  .card.show{opacity:1;translate:-50% 0;scale:1;pointer-events:auto}
+  .card h2{font-size:25px;font-weight:700;letter-spacing:-.022em;line-height:1.15;margin-bottom:8px}
+  .card p{font-size:15px;color:var(--text-soft);line-height:1.55;letter-spacing:-.005em}
+  .card strong{color:var(--text);font-weight:600}
+  .actions{display:flex;align-items:center;gap:18px;margin-top:16px;flex-wrap:wrap}
+  .btn{
+    font-size:15px;font-weight:500;text-decoration:none;color:var(--text);
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.22);
+    padding:10px 22px;border-radius:980px;
+    transition:background .2s, scale .15s;
+  }
+  .btn:hover{background:rgba(255,255,255,.24)}
+  .btn:active{scale:.97}
+  a:focus-visible{outline:2px solid rgba(255,255,255,.65);outline-offset:3px;border-radius:6px}
+
+  .intro{position:absolute;inset:0;z-index:35;pointer-events:none;transition:opacity .6s ease}
+  .intro.hide{opacity:0}
+  .eyebrow{
+    position:absolute;top:58px;left:0;right:0;text-align:center;
+    font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(255,255,255,.72);padding:0 22px;
+  }
+  .title-block{
+    position:absolute;left:0;right:0;bottom:0;
+    text-align:center;padding:90px 22px 30px;padding:90px 22px max(6svh,30px);
+    background:linear-gradient(transparent, rgba(4,7,15,.82) 70%);
+  }
+  .title-block h1{font-size:clamp(34px,6.5vw,68px);font-weight:700;letter-spacing:-.03em;line-height:1.05}
+  .title-block p{margin-top:10px;font-size:clamp(14px,1.9vw,18px);color:var(--text-soft)}
+  .chev{
+    display:block;margin:22px auto 0;width:18px;height:18px;
+    border-right:2px solid var(--text-soft);border-bottom:2px solid var(--text-soft);
+    rotate:45deg;animation:bob 1.9s ease-in-out infinite;
+  }
+  @keyframes bob{50%{translate:0 8px;opacity:.5}}
+
+  .progress{
+    position:absolute;right:22px;top:50%;translate:0 -50%;z-index:45;
+    display:grid;gap:14px;justify-items:center;
+  }
+  .progress span{
+    width:6px;height:6px;border-radius:50%;
+    background:rgba(255,255,255,.18);transition:background .3s, scale .3s;
+  }
+  .progress span.on{background:rgba(255,255,255,.85);scale:1.2}
+
+  footer{
+    position:relative;z-index:10;text-align:center;
+    padding:36px 22px 48px;font-size:12px;color:var(--text-soft);
+  }
+  footer a{color:var(--text-soft)}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .tw,.chev,.clouds{animation:none}
+    .pin.lit .halo{animation:none;opacity:0}
+    .card,.intro{transition:none}
+    svg.space{transform:none!important}
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>macsonm</h1>
-        </div>
-        <div class="section">
-            <div class="section-title">👋About Me</div>
-            <div class="section-content">
-                <p>Welcome to my personal page! I am passionate about exploring new places and technologies.</p>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-title">📍Travel</div>
-            <div class="section-content">
-                <p><a href="https://pintraveler.net/map.html?user=SWCEjv7gEcfli7vtDMGNmrK46Nm1&place=" class="link">Wish list destinations</a></p>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-title">📫Contact Me</div>
-            <div class="section-content">
-                <p>If you have any questions or want to share your travel experiences, feel free to reach out to me at <a href="mailto:example@example.com" class="link">example@example.com</a>.</p>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-title">🔒My Secrets</div>
-            <div class="section-content">
-                <p><a href="https://myprivate.pics/WW2AIO.jpg" class="link">click me</a></p>
-            </div>
-        </div>
+
+<nav>
+  <a class="brand" href="#top"><svg class="ig" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#FEDA75"/><stop offset="30%" stop-color="#FA7E1E"/><stop offset="55%" stop-color="#D62976"/><stop offset="80%" stop-color="#962FBF"/><stop offset="100%" stop-color="#4F5BD5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)"/><circle cx="12" cy="12" r="4.5" stroke="url(#igg)"/><circle cx="17.2" cy="6.8" r="1.3" fill="url(#igg)"/></svg>macsonm</a>
+</nav>
+
+<div class="journey" id="top">
+  <div class="stage">
+
+    <svg class="space" id="scene" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="sphere" cx="38%" cy="32%" r="75%">
+          <stop offset="0%"  stop-color="#3D8BD8"/>
+          <stop offset="45%" stop-color="#16498F"/>
+          <stop offset="80%" stop-color="#0A2452"/>
+          <stop offset="100%" stop-color="#050F26"/>
+        </radialGradient>
+        <radialGradient id="atmo" cx="50%" cy="50%" r="50%">
+          <stop offset="78%" stop-color="rgba(91,167,255,0)"/>
+          <stop offset="90%" stop-color="rgba(91,167,255,.35)"/>
+          <stop offset="97%" stop-color="rgba(140,190,255,.12)"/>
+          <stop offset="100%" stop-color="rgba(140,190,255,0)"/>
+        </radialGradient>
+        <linearGradient id="night" x1="0" y1="0" x2="1" y2=".25">
+          <stop offset="55%" stop-color="rgba(0,0,0,0)"/>
+          <stop offset="100%" stop-color="rgba(2,5,14,.75)"/>
+        </linearGradient>
+        <clipPath id="globeClip"><circle cx="500" cy="465" r="330"/></clipPath>
+
+        <g id="lm-basil">
+          <path d="M-2,-27 Q-9,-19 -5,-13 L-5,0 L5,0 L5,-13 Q9,-19 2,-27 Q0,-31 -2,-27 Z"/>
+          <path d="M-13,-15 Q-18,-10 -15,-6 L-15,0 L-8,0 L-8,-6 Q-5,-10 -10,-15 Q-11.5,-18 -13,-15 Z"/>
+          <path d="M13,-15 Q18,-10 15,-6 L15,0 L8,0 L8,-6 Q5,-10 10,-15 Q11.5,-18 13,-15 Z"/>
+          <rect x="-1" y="-35" width="2" height="6"/>
+        </g>
+        <g id="lm-matterhorn">
+          <path d="M-17,0 L-6,-24 L-2,-19 L4,-36 L9,-16 L17,0 Z"/>
+        </g>
+        <g id="lm-stave">
+          <path d="M-12,0 L-12,-8 L12,-8 L12,0 Z"/>
+          <path d="M-14,-8 L0,-18 L14,-8 Z"/>
+          <path d="M-9,-15 L0,-25 L9,-15 Z"/>
+          <path d="M-5,-23 L0,-32 L5,-23 Z"/>
+          <rect x="-1" y="-37" width="2" height="5"/>
+        </g>
+        <g id="lm-stockholm">
+          <rect x="-15" y="-34" width="9" height="34"/>
+          <circle cx="-12.7" cy="-36.5" r="1.3"/>
+          <circle cx="-9.3"  cy="-36.5" r="1.3"/>
+          <circle cx="-11"   cy="-39.5" r="1.3"/>
+          <rect x="-6" y="-12" width="21" height="12"/>
+          <rect x="-2" y="-9" width="2.6" height="5" fill="#0B2B5E"/>
+          <rect x="3"  y="-9" width="2.6" height="5" fill="#0B2B5E"/>
+          <rect x="8"  y="-9" width="2.6" height="5" fill="#0B2B5E"/>
+        </g>
+        <g id="lm-prague">
+          <path d="M-13,0 L-13,-17 L-7.5,-30 L-2,-17 L-2,0 Z"/>
+          <path d="M2,0 L2,-17 L7.5,-30 L13,-17 L13,0 Z"/>
+          <path d="M-2,0 L0,-12 L2,0 Z"/>
+          <circle cx="-7.5" cy="-31.5" r="1.4"/>
+          <circle cx="7.5" cy="-31.5" r="1.4"/>
+        </g>
+        <g id="lm-colosseum">
+          <path d="M-18,0 L-18,-13 Q-18,-19 -12,-19 L-2,-19 L0,-15 L14,-15 Q17,-14 17,-8 L18,0 Z"/>
+          <rect x="-14.5" y="-12" width="3.2" height="7" rx="1.6" fill="#0B2B5E"/>
+          <rect x="-8.5"  y="-12" width="3.2" height="7" rx="1.6" fill="#0B2B5E"/>
+          <rect x="-2.5"  y="-11" width="3.2" height="6" rx="1.6" fill="#0B2B5E"/>
+          <rect x="3.5"   y="-11" width="3.2" height="6" rx="1.6" fill="#0B2B5E"/>
+          <rect x="9.5"   y="-11" width="3.2" height="6" rx="1.6" fill="#0B2B5E"/>
+        </g>
+        <g id="lm-eiffel">
+          <path d="M0,-42 C1,-29 3,-21 6,-15 L13,-2 L9,-2 C6,-8 3,-10 0,-10 C-3,-10 -6,-8 -9,-2 L-13,-2 L-6,-15 C-3,-21 -1,-29 0,-42 Z"/>
+          <rect x="-8" y="-15" width="16" height="2"/>
+          <rect x="-5" y="-26" width="10" height="1.6"/>
+        </g>
+        <g id="lm-sagrada">
+          <path d="M-15,0 L-11.5,-22 L-8,0 Z"/>
+          <path d="M-7,0 L-3.5,-33 L0,0 Z"/>
+          <path d="M-1,0 L2.5,-28 L6,0 Z"/>
+          <path d="M7,0 L10.5,-19 L14,0 Z"/>
+          <circle cx="-11.5" cy="-23.5" r="1.4"/>
+          <circle cx="-3.5" cy="-34.5" r="1.4"/>
+          <circle cx="2.5" cy="-29.5" r="1.4"/>
+          <circle cx="10.5" cy="-20.5" r="1.4"/>
+        </g>
+        <g id="lm-bigben">
+          <rect x="-5" y="-32" width="10" height="32"/>
+          <path d="M-5,-32 L0,-43 L5,-32 Z"/>
+          <circle cx="0" cy="-25" r="3.4" fill="#0B2B5E"/>
+          <rect x="-8" y="-4" width="16" height="4"/>
+        </g>
+      </defs>
+
+      <g id="starsFar"></g>
+      <g id="starsNear"></g>
+
+      <circle cx="500" cy="465" r="392" fill="url(#atmo)"/>
+      <circle cx="500" cy="465" r="330" fill="url(#sphere)"/>
+
+      <g clip-path="url(#globeClip)">
+        <g fill="#33705B" opacity=".92" stroke="#275745" stroke-width="1.6">
+          <path d="M457.3,789.6L415.3,781.3L374.7,767.5L336.3,748.5L300.7,724.8L280.9,708.3L256.7,684.1L240.2,664.3L222.5,638.8L229.5,626.5L238.6,619.7L260.2,613.6L275.6,594.3L283.5,596.4L289.0,603.8L299.6,605.4L310.5,611.0L315.3,612.2L327.2,606.9L339.6,606.8L347.4,602.4L358.7,600.0L396.4,601.7L401.9,604.4L412.9,600.0L424.9,601.0L429.2,604.6L437.0,604.4L449.5,599.6L457.3,601.6L456.7,608.7L466.5,604.0L467.2,606.7L461.3,613.3L461.0,619.7L464.8,623.3L462.9,635.2L455.0,641.8L457.0,649.5L463.0,650.0L465.8,656.6L470.2,658.9L484.1,664.0L489.1,662.9L499.0,665.2L514.9,671.2L520.7,683.3L548.9,690.6L562.1,696.6L567.9,692.7L573.3,686.0L570.0,675.8L573.3,668.9L581.5,661.7L589.5,659.1L605.7,660.2L610.2,665.9L614.6,665.4L618.6,667.2L630.5,667.2L633.9,671.3L649.5,668.7L679.2,673.2L687.6,667.2L691.8,662.3L701.9,659.0L710.3,658.8L714.6,664.7L716.5,659.7L726.3,660.6L735.4,659.1L740.3,654.2L742.8,649.0L741.9,648.4L743.6,641.4L743.8,630.7L746.6,614.6L750.0,603.1L746.7,593.1L748.0,586.8L742.7,581.8L745.5,575.6L739.4,578.6L729.8,578.0L724.2,587.8L708.1,593.5L697.9,588.3L686.1,590.5L684.6,596.7L677.3,599.9L665.5,594.7L653.5,597.2L645.0,584.6L636.0,578.3L639.8,566.6L632.1,561.1L641.9,545.9L657.9,542.4L660.4,531.0L680.3,528.7L690.6,516.9L701.3,510.1L717.6,505.4L737.2,509.9L752.6,510.7L763.3,504.8L771.9,503.0L780.9,491.9L780.5,485.7L775.1,477.5L768.2,474.5L762.6,474.9L742.5,464.7L730.5,463.0L720.2,457.6L726.3,453.3L730.3,439.6L723.7,435.9L734.9,426.0L733.7,423.2L719.9,431.3L715.3,437.6L707.1,440.8L700.6,448.1L703.4,456.5L708.8,458.5L718.0,454.9L717.6,460.3L708.1,465.6L697.3,477.1L691.3,475.6L691.8,468.7L680.6,467.2L681.6,464.2L689.5,457.3L686.0,454.9L670.7,454.9L668.9,450.0L660.7,453.6L658.8,462.0L653.5,473.8L654.4,477.3L650.3,481.2L647.1,480.5L647.4,497.8L643.3,504.6L641.2,515.2L645.8,522.5L647.9,527.6L657.6,530.4L656.4,534.2L644.2,537.2L632.7,551.2L628.5,545.3L628.2,542.4L616.2,542.4L603.8,547.8L612.1,554.7L606.9,557.6L601.0,558.4L594.6,551.9L592.9,555.1L596.1,563.2L602.2,569.1L598.4,572.7L605.1,578.4L611.0,581.7L612.0,589.5L601.4,587.1L605.4,593.8L598.5,596.1L603.9,607.9L596.4,608.9L586.7,603.8L581.6,593.1L578.9,584.0L568.0,570.4L566.9,566.5L565.0,565.7L564.6,562.6L558.3,558.3L557.0,551.7L557.3,542.1L558.5,537.6L554.3,534.6L551.1,530.1L536.4,522.9L530.2,518.1L520.7,514.2L511.9,503.9L513.9,502.8L509.3,497.0L509.0,492.2L502.6,490.0L499.5,496.1L496.6,491.4L496.8,486.5L499.4,484.9L491.5,482.8L483.4,487.7L483.8,494.8L482.5,498.8L485.7,506.0L495.1,513.3L500.3,525.0L512.0,536.3L520.3,536.0L522.9,539.1L520.0,541.9L537.7,550.7L547.2,557.6L548.4,560.1L546.7,565.3L540.4,559.0L530.9,557.1L526.6,566.3L534.7,571.3L533.6,578.6L529.1,579.6L523.4,591.8L518.8,593.0L518.8,588.7L520.9,581.2L523.2,578.1L515.3,563.1L510.8,561.4L507.6,555.3L500.7,552.8L496.0,547.1L488.2,546.2L480.0,539.6L463.9,521.8L461.3,507.7L456.3,505.7L448.3,500.6L443.6,502.2L437.2,508.3L432.9,509.0L423.0,516.1L403.3,510.1L387.9,512.7L385.7,521.0L385.2,529.2L374.1,537.0L360.3,537.8L358.7,542.3L351.0,548.9L345.2,559.4L348.1,568.1L340.9,573.1L337.2,581.6L328.5,582.7L319.0,591.7L294.9,586.1L287.2,589.3L282.1,593.3L277.0,590.8L274.0,585.2L272.7,576.6L263.3,571.7L258.3,574.0L253.2,570.5L247.4,570.3L251.6,560.3L252.7,551.7L248.5,549.0L247.4,543.1L250.5,534.6L255.8,530.9L262.2,518.2L263.5,512.3L262.8,506.9L263.6,502.2L266.8,492.7L264.5,485.6L280.7,479.9L291.7,485.7L304.6,489.0L314.4,494.0L338.5,499.1L345.2,491.9L352.3,464.5L345.6,448.0L340.3,439.5L327.7,431.0L329.2,420.7L341.4,420.4L355.7,427.2L356.2,411.0L363.3,418.6L386.0,411.5L390.6,400.5L406.0,397.1L411.1,393.9L421.3,374.2L433.5,369.6L440.4,370.7L442.3,367.9L449.3,367.7L450.6,370.9L456.8,364.4L455.3,359.0L455.6,351.1L452.9,343.1L453.9,328.8L458.1,321.1L464.9,320.7L467.8,317.0L474.2,313.4L473.5,320.5L471.0,325.0L471.7,328.9L475.9,331.2L473.7,336.4L471.4,334.8L465.1,344.5L466.9,351.5L466.7,356.9L474.8,360.5L474.5,365.5L483.1,363.1L487.8,359.4L497.1,365.1L501.0,369.5L506.7,365.4L529.5,353.5L537.8,355.4L538.6,358.8L546.6,358.5L547.9,352.2L558.6,346.7L555.7,335.1L554.9,324.6L557.7,315.6L564.2,310.1L571.5,319.8L577.6,318.7L577.0,299.7L574.6,301.8L569.2,297.5L567.4,289.7L575.9,284.7L584.4,281.4L592.4,282.5L599.6,280.8L605.7,271.8L597.1,266.8L585.0,270.0L573.8,276.7L562.8,281.0L557.8,274.0L550.6,270.2L550.5,256.6L545.9,244.6L548.0,236.5L552.6,227.4L564.1,211.2L567.5,207.9L565.8,202.3L556.7,197.2L547.5,202.1L543.0,212.0L544.9,220.1L524.9,244.2L521.2,263.6L526.6,273.1L533.8,280.3L528.2,296.3L520.8,299.8L518.9,323.2L514.8,336.4L505.3,335.2L500.8,346.4L491.5,347.0L489.2,333.7L483.1,317.7L478.2,297.9L473.8,289.2L458.3,304.3L448.1,306.8L438.7,298.8L438.1,283.7L440.3,252.0L447.5,243.9L465.6,234.0L478.8,220.7L504.1,176.7L525.3,149.5L535.2,143.0L543.1,142.9L544.2,140.6L568.1,144.7L593.0,151.1L617.3,159.3L633.2,165.9L643.9,171.0L643.2,173.1L636.2,179.3L609.1,176.7L605.7,179.3L617.7,186.4L625.2,205.3L639.8,209.0L638.1,202.6L632.6,198.1L634.2,192.2L650.8,195.7L654.0,191.0L646.3,183.1L649.9,173.9L671.1,185.8L692.4,200.1L706.0,210.6L719.1,221.7L731.5,233.5L749.0,252.4L759.8,265.7L774.6,286.7L787.7,308.8L799.1,331.8L811.4,363.8L821.6,403.9L821.5,408.6L814.5,414.6L811.9,432.0L824.7,440.6L827.0,447.9L827.3,473.6L825.6,499.2L821.9,524.7L816.3,549.7L808.6,574.3L795.5,606.0L783.5,628.7L764.9,657.4L751.8,674.3L750.0,671.2L751.8,674.3L733.7,694.3L722.4,677.9L721.4,679.3L728.6,692.1L731.9,696.1L706.0,719.4L678.3,739.6L648.6,756.7L625.3,767.5L593.0,778.9L568.1,785.3L534.2,790.6L508.6,792.3L482.9,792.0L457.3,789.6Z"/>
+          <path d="M484.1,590.0L497.1,591.4L516.9,588.5L513.0,599.6L514.8,603.9L512.5,611.1L503.8,605.9L498.0,604.4L482.4,597.2L484.1,590.0Z"/>
+          <path d="M437.6,548.2L443.5,549.3L449.0,545.3L454.9,555.6L452.5,574.1L447.6,572.9L442.9,577.3L438.9,573.3L439.6,556.4L437.6,548.2Z"/>
+          <path d="M449.4,542.9L444.7,539.7L442.9,530.1L445.3,525.0L452.3,520.1L453.4,532.2L449.4,542.9Z"/>
+          <path d="M307.9,338.3L329.5,326.5L336.0,327.7L341.7,338.3L334.8,346.5L333.3,356.5L323.7,367.0L306.9,370.8L296.2,365.2L307.3,353.2L307.9,338.3Z"/>
+          <path d="M374.0,326.3L377.5,345.5L382.5,348.7L385.6,371.3L395.2,375.6L392.6,384.3L387.6,387.7L389.7,395.4L380.6,401.4L369.0,399.2L353.5,399.9L350.1,396.3L342.9,401.5L335.3,398.0L328.0,401.8L324.1,397.9L340.3,386.6L348.6,385.4L336.0,380.0L335.1,373.9L344.9,371.8L342.3,363.4L346.2,354.8L357.8,358.9L361.0,351.2L357.7,341.3L348.9,336.7L348.1,332.5L352.6,327.2L351.1,322.8L345.2,328.2L348.6,315.1L346.9,307.2L353.7,294.0L362.4,284.6L367.7,287.0L376.5,287.9L365.0,300.7L372.8,300.6L380.7,302.3L376.1,313.0L366.4,323.7L374.0,326.3Z"/>
+          <path d="M475.4,340.7L487.1,336.4L489.5,343.4L484.4,354.7L476.2,346.5L475.4,340.7Z"/>
+          <path d="M341.0,178.9L341.8,184.2L330.3,190.9L319.4,192.0L341.0,178.9Z"/>
+          <path d="M623.7,624.0L609.5,623.1L611.0,617.0L617.7,620.9L626.4,618.9L635.0,618.6L635.0,621.0L640.9,618.4L640.0,622.7L623.8,626.3L623.7,624.0Z"/>
+          <path d="M518.4,330.0L523.4,318.3L524.5,319.1L519.1,335.3L518.4,330.0Z"/>
+          <path d="M533.3,324.2L531.7,324.8L532.2,321.7L531.2,319.6L531.7,317.8L531.1,315.7L535.0,310.1L540.3,308.9L536.3,313.9L536.7,316.8L538.0,316.7L537.8,317.7L535.9,318.8L536.1,320.2L534.3,321.4L533.3,324.2Z"/>
+          <path d="M542.7,228.3L544.0,228.1L542.9,231.6L542.1,231.5L542.7,228.3Z"/>
+          <path d="M714.8,602.1L722.7,600.3L731.6,593.6L725.5,601.3L727.4,604.7L717.3,613.0L711.5,612.6L707.9,607.8L713.8,605.8L714.8,602.1Z"/>
+        </g>
+        <g class="clouds" fill="#ffffff" opacity=".11">
+          <ellipse cx="320" cy="430" rx="130" ry="18" transform="rotate(-12 320 430)"/>
+          <ellipse cx="560" cy="660" rx="150" ry="17" transform="rotate(8 560 660)"/>
+          <ellipse cx="600" cy="240" rx="115" ry="15" transform="rotate(-6 600 240)"/>
+        </g>
+        <circle cx="500" cy="465" r="330" fill="url(#night)"/>
+        <ellipse cx="385" cy="270" rx="160" ry="88" fill="#ffffff" opacity=".08" transform="rotate(-24 385 270)"/>
+      </g>
+
+      <path class="route-glow" d="M683.0,313.6 C 656,218 602,200 529.4,291.0 C 588,318 548,352 566,392 C 574,410 540,424 503.8,421.4 C 458,368 408,378 412,438 C 416,472 436,470 447.7,457.9 C 396,486 388,548 440,558 C 478,564 494,550 484.2,537.0 C 474,650 376,644 375.2,534.9 C 276,548 278,420 392.2,430.8 C 334,478 290,426 316,388 C 334,362 362,370 376.7,390.0 C 348,330 396,256 444,250 C 472,248 480,262 476.9,283.3"/>
+      <path class="route" id="routePath" d="M683.0,313.6 C 656,218 602,200 529.4,291.0 C 588,318 548,352 566,392 C 574,410 540,424 503.8,421.4 C 458,368 408,378 412,438 C 416,472 436,470 447.7,457.9 C 396,486 388,548 440,558 C 478,564 494,550 484.2,537.0 C 474,650 376,644 375.2,534.9 C 276,548 278,420 392.2,430.8 C 334,478 290,426 316,388 C 334,362 362,370 376.7,390.0 C 348,330 396,256 444,250 C 472,248 480,262 476.9,283.3"/>
+      <path class="route-done" id="routeDone" d=""/>
+
+      <g class="lm" id="lm0"><g class="lm-i"><use href="#lm-basil"/><text class="lm-name" y="-44">Moscow</text></g></g>
+      <g class="lm" id="lm1"><g class="lm-i"><use href="#lm-stockholm"/><text class="lm-name" y="-50">Stockholm</text></g></g>
+      <g class="lm" id="lm2"><g class="lm-i"><use href="#lm-prague"/><text class="lm-name" y="-42">Prague</text></g></g>
+      <g class="lm" id="lm3"><g class="lm-i"><use href="#lm-matterhorn"/><text class="lm-name" y="-46">Zermatt</text></g></g>
+      <g class="lm" id="lm4"><g class="lm-i"><use href="#lm-colosseum"/><text class="lm-name" y="-30">Rome</text></g></g>
+      <g class="lm" id="lm5"><g class="lm-i"><use href="#lm-sagrada"/><text class="lm-name" y="-44">Barcelona</text></g></g>
+      <g class="lm" id="lm6"><g class="lm-i"><use href="#lm-eiffel"/><text class="lm-name" y="-52">Paris</text></g></g>
+      <g class="lm" id="lm7"><g class="lm-i"><use href="#lm-bigben"/><text class="lm-name" y="-52">London</text></g></g>
+      <g class="lm" id="lm8"><g class="lm-i"><use href="#lm-stave"/><text class="lm-name" y="-46">Oslo</text></g></g>
+
+      <g class="pin" id="pin0">
+        <circle class="halo" r="8"/><circle class="core" r="8"/>
+      </g>
+      <g class="pin" id="pin1">
+        <circle class="halo" r="8"/><circle class="core" r="8"/>
+      </g>
+      <g class="pin" id="pin2">
+        <circle class="halo" r="8"/><circle class="core" r="8"/>
+      </g>
+
+      <g id="plane" class="plane">
+        <path d="M0,-15 C2.3,-9 2.3,-4.5 1.7,-1 L15,7 L15,10.4 L2.3,5.2 L1.7,12.6 L6.3,16.6 L6.3,19.5 L0,17.2 L-6.3,19.5 L-6.3,16.6 L-1.7,12.6 L-2.3,5.2 L-15,10.4 L-15,7 L-1.7,-1 C-2.3,-4.5 -2.3,-9 0,-15 Z"/>
+      </g>
+    </svg>
+
+    <div class="intro" id="intro">
+      <span class="eyebrow">Personal page</span>
+      <div class="title-block">
+        <h1>Around the world.</h1>
+        <p>Scroll — and we take off.</p>
+        <span class="chev" aria-hidden="true"></span>
+      </div>
     </div>
+
+    <div class="card" id="card0">
+      <h2>Hi, I'm macsonm.</h2>
+      <p>I'm passionate about exploring <strong>new places</strong> and <strong>new technologies</strong> — usually both at once.</p>
+    </div>
+
+    <div class="card" id="card1">
+      <h2>A world worth mapping.</h2>
+      <p>I keep a living map of destinations I dream about — pins waiting to become stories.</p>
+      <div class="actions">
+        <a class="btn" href="https://pintraveler.net/map.html?user=SWCEjv7gEcfli7vtDMGNmrK46Nm1&place=" target="_blank" rel="noopener">📍 Wish list destinations</a>
+      </div>
+    </div>
+
+    <div class="card" id="card2">
+      <h2>Say hello.</h2>
+      <p>Questions, ideas, or travel stories of your own? Write me.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:example@example.com">✉️ Send an email</a>
+      </div>
+    </div>
+
+    <div class="progress" aria-hidden="true">
+      <span id="dot0" class="on"></span><span id="dot1"></span><span id="dot2"></span>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <a href="https://myprivate.pics/WW2AIO.jpg">🔒 my secrets</a>
+</footer>
+
+<script>
+  function makeStars(n, rMax){
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      var tw = Math.random() < .22 ? ' class="star tw"' : ' class="star"';
+      s += '<circle' + tw + ' cx="' + ((Math.random()*1000)|0) + '" cy="' + ((Math.random()*1000)|0) +
+           '" r="' + (Math.random()*rMax+.3).toFixed(1) + '" opacity="' + (Math.random()*.65+.2).toFixed(2) +
+           '" style="animation-delay:' + (Math.random()*3).toFixed(1) + 's"/>';
+    }
+    return s;
+  }
+  var starsFar  = document.getElementById('starsFar');
+  var starsNear = document.getElementById('starsNear');
+  starsFar.innerHTML  = makeStars(90, .9);
+  starsNear.innerHTML = makeStars(50, 1.6);
+
+  var route = document.getElementById('routePath');
+  var done  = document.getElementById('routeDone');
+  var plane = document.getElementById('plane');
+  var intro = document.getElementById('intro');
+  var scene = document.getElementById('scene');
+  var journey = document.querySelector('.journey');
+  var cards = [0,1,2].map(function(i){ return document.getElementById('card'+i); });
+  var pins  = [0,1,2].map(function(i){ return document.getElementById('pin'+i); });
+  var dots  = [0,1,2].map(function(i){ return document.getElementById('dot'+i); });
+
+  var LEN = route.getTotalLength();
+  done.setAttribute('d', route.getAttribute('d'));
+  done.style.strokeDasharray = LEN;
+  done.style.strokeDashoffset = LEN;
+
+  var CITY = {"moscow": [683.0, 313.6], "rome": [484.2, 537.0], "paris": [392.2, 430.8], "barcelona": [375.2, 534.9], "london": [376.7, 390.0], "prague": [503.8, 421.4], "stockholm": [529.4, 291.0], "zurich": [447.7, 457.9], "oslo": [476.9, 283.3]};
+
+  function tFor(x, y){
+    var best = 0, bd = 1e12;
+    for (var i = 0; i <= 900; i++) {
+      var p = route.getPointAtLength(LEN * i / 900);
+      var d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+      if (d < bd) { bd = d; best = i / 900; }
+    }
+    return best;
+  }
+
+  var LANDMARKS = [
+    { c: CITY.moscow,    el: 'lm0', dy: -12 },    { c: CITY.stockholm, el: 'lm1', dy: -12 },    { c: CITY.prague,    el: 'lm2', dy: -12 },    { c: CITY.zurich,    el: 'lm3', dy: -10 },    { c: CITY.rome,      el: 'lm4', dy: -10 },    { c: CITY.barcelona, el: 'lm5', dy: -12 },    { c: CITY.paris,     el: 'lm6', dy: -12 },    { c: CITY.london,    el: 'lm7', dy: -12 },    { c: CITY.oslo,      el: 'lm8', dy: -12 }  ];
+  LANDMARKS.forEach(function(lm, i){
+    lm.t = tFor(lm.c[0], lm.c[1]);
+    lm.u = i / (LANDMARKS.length - 1);    lm.node = document.getElementById(lm.el);
+    lm.inner = lm.node.querySelector('.lm-i');
+    var pt = route.getPointAtLength(LEN * lm.t);
+    lm.node.setAttribute('transform', 'translate(' + pt.x + ',' + (pt.y + lm.dy) + ')');
+  });
+
+  function planeT(u){
+    var n = LANDMARKS.length - 1;
+    var k = Math.min(n - 1, Math.floor(u * n));
+    var local = u * n - k;
+    return LANDMARKS[k].t + (LANDMARKS[k + 1].t - LANDMARKS[k].t) * local;
+  }
+
+  var STOP_IDX = [0, 3, 7];
+  STOP_IDX.forEach(function(li, i){
+    var pt = route.getPointAtLength(LEN * LANDMARKS[li].t);
+    pins[i].setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
+  });
+
+  var REVEAL_U = 0.09;
+  var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var target = 0, current = 0, rafId = null, raw = 0;
+
+  function setPlane(u){
+    var p = planeT(u);
+    var pt = route.getPointAtLength(LEN * p);
+    var ahead = route.getPointAtLength(Math.min(LEN, LEN * p + 2));
+    var ang = Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180 / Math.PI + 90;
+    plane.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ') rotate(' + ang + ')');
+    done.style.strokeDashoffset = LEN * (1 - p);
+  }
+
+  function setPins(u){
+    STOP_IDX.forEach(function(li, i){
+      var d = Math.abs(u - LANDMARKS[li].u);
+      var o = Math.max(0, 1 - d / (REVEAL_U * 1.25));
+      o = o * o * (3 - 2 * o);
+      pins[i].style.opacity = o.toFixed(3);
+      pins[i].classList.toggle('lit', o > 0.5);
+    });
+  }
+
+  function setLandmarks(u){
+    LANDMARKS.forEach(function(lm){
+      var d = Math.abs(u - lm.u);
+      var o = Math.max(0, 1 - d / REVEAL_U);
+      o = o * o * (3 - 2 * o);
+      lm.inner.style.opacity = o.toFixed(3);
+      lm.inner.style.transform = 'translateY(' + ((1 - o) * 8).toFixed(1) + 'px) scale(' + (0.8 + 0.2 * o).toFixed(3) + ')';
+    });
+  }
+
+  function parallax(u){
+    if (reduceMotion) return;
+    scene.style.transform = 'scale(' + (1 + u * .05) + ') translateY(' + (u * -14) + 'px)';
+    starsFar.setAttribute('transform',  'translate(0 ' + (u * 18) + ')');
+    starsNear.setAttribute('transform', 'translate(0 ' + (u * 36) + ')');
+  }
+
+  function applyState(){
+    intro.classList.toggle('hide', raw > .045);
+    var pr = Math.min(1, Math.max(0, (raw - .08) / .88));
+    var seg = pr >= 7/8 ? 2 : pr >= 3/8 ? 1 : 0;
+    cards.forEach(function(c, i){ c.classList.toggle('show', i === seg && raw > .07); });
+    dots.forEach(function(d, i){ d.classList.toggle('on', i === seg); });
+  }
+
+  function tick(){
+    current += (target - current) * 0.13;
+    if (Math.abs(target - current) < .0005) current = target;
+    setPlane(current);
+    setLandmarks(current);
+    setPins(current);
+    parallax(current);
+    applyState();
+    if (current !== target) rafId = requestAnimationFrame(tick); else rafId = null;
+  }
+
+  function onScroll(){
+    var max = journey.offsetHeight - innerHeight;
+    raw = max > 0 ? Math.min(1, Math.max(0, (scrollY - journey.offsetTop) / max)) : 0;
+    target = Math.min(1, Math.max(0, (raw - .08) / .88));
+    if (reduceMotion) { current = target; setPlane(current); setLandmarks(current); setPins(current); applyState(); }
+    else if (!rafId) rafId = requestAnimationFrame(tick);
+  }
+
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', onScroll);
+  setPlane(0);
+  setLandmarks(0);
+  setPins(0);
+  onScroll();
+</script>
 </body>
 </html>
