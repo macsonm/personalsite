@@ -32,7 +32,7 @@
   }
   .brand .ig{width:17px;height:17px}
 
-  .journey{height:320vh;position:relative}
+  .journey{height:360vh;position:relative}
   .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
   .stage::after{
     content:"";position:absolute;inset:0;pointer-events:none;
@@ -144,6 +144,11 @@
   }
   .progress span.on{background:rgba(255,255,255,.85);scale:1.2}
 
+  footer{
+    opacity:0;translate:0 26px;pointer-events:none;
+    transition:opacity .8s ease, translate .8s ease;
+  }
+  footer.show{opacity:1;translate:0 0;pointer-events:auto}
   footer{
     position:relative;z-index:10;text-align:center;
     padding:36px 22px 48px;font-size:12px;color:var(--text-soft);
@@ -386,6 +391,7 @@
   var intro = document.getElementById('intro');
   var scene = document.getElementById('scene');
   var journey = document.querySelector('.journey');
+  var foot = document.querySelector('footer');
   var cards = [0,1,2].map(function(i){ return document.getElementById('card'+i); });
   var pins  = [0,1,2].map(function(i){ return document.getElementById('pin'+i); });
   var dots  = [0,1,2].map(function(i){ return document.getElementById('dot'+i); });
@@ -432,7 +438,7 @@
 
   var REVEAL_U = 0.09;
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var target = 0, current = 0, rafId = null, raw = 0;
+  var target = 0, current = 0, rafId = null, raw = 0, landedAt = 0;
 
   function setPlane(u){
     var p = planeT(u);
@@ -472,14 +478,25 @@
 
   function applyState(){
     intro.classList.toggle('hide', raw > .045);
-    var pr = Math.min(1, Math.max(0, (raw - .08) / .88));
+    var pr = Math.min(1, Math.max(0, (raw - .08) / .72));
+    var landed = current >= .993;
+    foot.classList.toggle('show', landed);
+    if (landed && !landedAt) landedAt = performance.now();
+    if (!landed) landedAt = 0;
+    if (!(landedAt && performance.now() - landedAt > 500)) {
+      var maxY = journey.offsetTop + journey.offsetHeight - window.innerHeight;
+      if (window.scrollY > maxY) window.scrollTo(0, maxY);
+    }
     var seg = pr >= 7/8 ? 2 : pr >= 3/8 ? 1 : 0;
     cards.forEach(function(c, i){ c.classList.toggle('show', i === seg && raw > .07); });
     dots.forEach(function(d, i){ d.classList.toggle('on', i === seg); });
   }
 
   function tick(){
-    current += (target - current) * 0.13;
+    var gap = target - current;
+    var k = 0.13 + Math.min(0.4, Math.abs(gap) * 1.6);
+    if (target >= 1) k = Math.max(k, 0.3);
+    current += gap * k;
     if (Math.abs(target - current) < .0005) current = target;
     setPlane(current);
     setLandmarks(current);
@@ -492,7 +509,7 @@
   function onScroll(){
     var max = journey.offsetHeight - innerHeight;
     raw = max > 0 ? Math.min(1, Math.max(0, (scrollY - journey.offsetTop) / max)) : 0;
-    target = Math.min(1, Math.max(0, (raw - .08) / .88));
+    target = Math.min(1, Math.max(0, (raw - .08) / .72));
     if (reduceMotion) { current = target; setPlane(current); setLandmarks(current); setPins(current); applyState(); }
     else if (!rafId) rafId = requestAnimationFrame(tick);
   }
