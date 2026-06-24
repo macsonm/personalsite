@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>macsonm — around the world</title>
-<meta name="description" content="Personal page of macsonm, built as a flight path. Scroll — and we take off.">
+<title>macson.m — around the world</title>
+<meta name="description" content="Personal page of macson.m, built as a flight path. Scroll — and we take off.">
 <style>
   :root{
     --space:#04070F;
@@ -38,7 +38,7 @@
     content:"";position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(120% 90% at 50% 42%, transparent 60%, rgba(0,0,0,.5) 100%);
   }
-  svg.space{position:absolute;inset:0;width:100%;height:100%}
+  svg.space{position:absolute;inset:0;width:100%;height:100%;will-change:transform}
   @media (orientation: landscape){
     svg.space .world{transform:translate(130px,200px) scale(0.74)}
   }
@@ -50,10 +50,11 @@
   .clouds{animation:drift 28s ease-in-out infinite alternate}
   @keyframes drift{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
 
-  .route-glow{fill:none;stroke:#ffffff;stroke-width:11;opacity:.07;stroke-linecap:round}
+  .route-glow{fill:none;stroke:#ffffff;stroke-width:9;opacity:.12;filter:blur(4px)}
   .route{fill:none;stroke:rgba(255,255,255,.6);stroke-width:3;stroke-dasharray:3 13;stroke-linecap:round}
   .route-done{
-    fill:none;stroke:rgba(255,255,255,.82);stroke-width:3;stroke-linecap:round;
+    fill:none;stroke:rgba(255,255,255,.78);stroke-width:3;stroke-linecap:round;
+    filter:drop-shadow(0 0 3px rgba(255,255,255,.35));
   }
 
   .pin{opacity:0}
@@ -66,7 +67,7 @@
     paint-order:stroke;stroke:rgba(4,7,15,.6);stroke-width:4;text-anchor:middle;
   }
 
-  .plane{fill:#C4E0FF;filter:drop-shadow(0 0 6px rgba(160,205,255,.9));will-change:transform}
+  .plane{fill:#C4E0FF;filter:drop-shadow(0 0 6px rgba(160,205,255,.9))}
 
   .lm{pointer-events:none}
   .lm .lm-i{
@@ -165,7 +166,7 @@
 <body>
 
 <nav>
-  <a class="brand" href="#top"><svg class="ig" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#FEDA75"/><stop offset="30%" stop-color="#FA7E1E"/><stop offset="55%" stop-color="#D62976"/><stop offset="80%" stop-color="#962FBF"/><stop offset="100%" stop-color="#4F5BD5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)"/><circle cx="12" cy="12" r="4.5" stroke="url(#igg)"/><circle cx="17.2" cy="6.8" r="1.3" fill="url(#igg)"/></svg>macsonm</a>
+  <a class="brand" href="#top"><svg class="ig" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#FEDA75"/><stop offset="30%" stop-color="#FA7E1E"/><stop offset="55%" stop-color="#D62976"/><stop offset="80%" stop-color="#962FBF"/><stop offset="100%" stop-color="#4F5BD5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)"/><circle cx="12" cy="12" r="4.5" stroke="url(#igg)"/><circle cx="17.2" cy="6.8" r="1.3" fill="url(#igg)"/></svg>macson.m</a>
 </nav>
 
 <div class="journey" id="top">
@@ -336,12 +337,12 @@
     </div>
 
     <div class="card" id="card0">
-      <h2>Hi, I'm macsonm.</h2>
+      <h2>Hi, I'm macson.m</h2>
       <p>I'm passionate about exploring <strong>new places</strong> and <strong>new technologies</strong> — usually both at once.</p>
     </div>
 
     <div class="card" id="card1">
-      <h2>A world worth mapping.</h2>
+      <h2>A world worth mapping</h2>
       <p>I keep a living map of destinations I dream about — pins waiting to become stories.</p>
       <div class="actions">
         <a class="btn" href="https://pintraveler.net/map?user=SWCEjv7gEcfli7vtDMGNmrK46Nm1" target="_blank" rel="noopener">📍 Wish list destinations</a>
@@ -349,7 +350,7 @@
     </div>
 
     <div class="card" id="card2">
-      <h2>Say hello.</h2>
+      <h2>Say hello</h2>
       <p>Questions, ideas, or travel stories of your own? Write me.</p>
       <div class="actions">
         <a class="btn" href="mailto:example@example.com">✉️ Send an email</a>
@@ -479,7 +480,12 @@
     });
   }
 
-  function parallax(){}
+  function parallax(u){
+    if (reduceMotion) return;
+    scene.style.transform = 'translateY(' + (u * -14) + 'px)';
+    starsFar.setAttribute('transform',  'translate(0 ' + (u * 18) + ')');
+    starsNear.setAttribute('transform', 'translate(0 ' + (u * 36) + ')');
+  }
 
   function applyState(){
     intro.classList.toggle('hide', raw > .006);
