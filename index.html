@@ -13,7 +13,7 @@
     --glow:#5BA7FF;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:auto}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:var(--space);color:var(--text);
@@ -156,7 +156,6 @@
   footer a{color:var(--text-soft)}
 
   @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto}
     .tw,.chev,.clouds{animation:none}
     .pin.lit .halo{animation:none;opacity:0}
     .card,.intro{transition:none}
@@ -439,6 +438,12 @@
   var REVEAL_U = 0.09;
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var target = 0, current = 0, rafId = null, raw = 0, landedAt = 0;
+  var jTop = 0, jMax = 0, jEnd = 0;
+  function measure(){
+    jTop = journey.offsetTop;
+    jMax = journey.offsetHeight - innerHeight;
+    jEnd = jTop + journey.offsetHeight - innerHeight;
+  }
 
   function setPlane(u){
     var p = planeT(u);
@@ -471,24 +476,23 @@
 
   function parallax(u){
     if (reduceMotion) return;
-    scene.style.transform = 'scale(' + (1 + u * .05) + ') translateY(' + (u * -14) + 'px)';
+    scene.style.transform = 'translateY(' + (u * -14) + 'px)';
     starsFar.setAttribute('transform',  'translate(0 ' + (u * 18) + ')');
     starsNear.setAttribute('transform', 'translate(0 ' + (u * 36) + ')');
   }
 
   function applyState(){
-    intro.classList.toggle('hide', raw > .02);
-    var pr = Math.min(1, Math.max(0, (raw - .02) / .78));
+    intro.classList.toggle('hide', raw > .006);
+    var pr = Math.min(1, Math.max(0, raw / .80));
     var landed = current >= .993;
     foot.classList.toggle('show', landed);
     if (landed && !landedAt) landedAt = performance.now();
     if (!landed) landedAt = 0;
     if (!(landedAt && performance.now() - landedAt > 500)) {
-      var maxY = journey.offsetTop + journey.offsetHeight - window.innerHeight;
-      if (window.scrollY > maxY) window.scrollTo(0, maxY);
+      if (scrollY > jEnd) scrollTo(0, jEnd);
     }
     var seg = pr >= 7/8 ? 2 : pr >= 3/8 ? 1 : 0;
-    cards.forEach(function(c, i){ c.classList.toggle('show', i === seg && raw > .03); });
+    cards.forEach(function(c, i){ c.classList.toggle('show', i === seg && raw > .012); });
     dots.forEach(function(d, i){ d.classList.toggle('on', i === seg); });
   }
 
@@ -507,15 +511,15 @@
   }
 
   function onScroll(){
-    var max = journey.offsetHeight - innerHeight;
-    raw = max > 0 ? Math.min(1, Math.max(0, (scrollY - journey.offsetTop) / max)) : 0;
-    target = Math.min(1, Math.max(0, (raw - .02) / .78));
+    raw = jMax > 0 ? Math.min(1, Math.max(0, (scrollY - jTop) / jMax)) : 0;
+    target = Math.min(1, Math.max(0, raw / .80));
     if (reduceMotion) { current = target; setPlane(current); setLandmarks(current); setPins(current); applyState(); }
     else if (!rafId) rafId = requestAnimationFrame(tick);
   }
 
   addEventListener('scroll', onScroll, {passive:true});
-  addEventListener('resize', onScroll, {passive:true});
+  addEventListener('resize', function(){ measure(); onScroll(); }, {passive:true});
+  measure();
   setPlane(0);
   setLandmarks(0);
   setPins(0);
