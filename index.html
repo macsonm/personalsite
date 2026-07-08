@@ -83,7 +83,7 @@
 
   .card{
     position:absolute;z-index:40;
-    left:50%;bottom:52px;bottom:max(6svh,52px);translate:-50% 28px;scale:.985;
+    left:50%;top:calc(var(--uiB,100svh) - 52px);translate:-50% calc(-100% + 28px);scale:.985;
     width:min(470px,calc(100% - 36px));
     background:rgba(20,26,38,.55);
     border:1px solid rgba(255,255,255,.12);
@@ -97,7 +97,7 @@
                translate .5s cubic-bezier(.32,.72,.25,1),
                scale .5s cubic-bezier(.32,.72,.25,1);
   }
-  .card.show{opacity:1;translate:-50% 0;scale:1;pointer-events:auto}
+  .card.show{opacity:1;translate:-50% -100%;scale:1;pointer-events:auto}
   .card h2{font-size:25px;font-weight:700;letter-spacing:-.022em;line-height:1.15;margin-bottom:8px}
   .card p{font-size:15px;color:var(--text-soft);line-height:1.55;letter-spacing:-.005em}
   .card strong{color:var(--text);font-weight:600}
@@ -121,8 +121,8 @@
     color:rgba(255,255,255,.72);padding:0 22px;
   }
   .title-block{
-    position:absolute;left:0;right:0;bottom:0;
-    text-align:center;padding:90px 22px 30px;padding:90px 22px max(6svh,30px);
+    position:absolute;left:0;right:0;top:var(--uiB,100svh);translate:0 -100%;
+    text-align:center;padding:90px 22px 30px;
     background:linear-gradient(transparent, rgba(4,7,15,.82) 70%);
   }
   .title-block h1{font-size:clamp(34px,6.5vw,68px);font-weight:700;letter-spacing:-.03em;line-height:1.05}
@@ -135,7 +135,7 @@
   @keyframes bob{50%{translate:0 8px;opacity:.5}}
 
   .progress{
-    position:absolute;right:22px;top:50%;translate:0 -50%;z-index:45;
+    position:absolute;right:22px;top:calc(var(--uiB,100svh)/2);translate:0 -50%;z-index:45;
     display:grid;gap:14px;justify-items:center;
   }
   .progress span{
@@ -145,12 +145,12 @@
   .progress span.on{background:rgba(255,255,255,.85);scale:1.2}
 
   footer{
-    position:absolute;left:0;right:0;bottom:16px;z-index:41;
+    position:absolute;left:0;right:0;top:calc(var(--uiB,100svh) - 12px);z-index:41;
     text-align:center;font-size:12px;color:var(--text-soft);
-    opacity:0;translate:0 18px;pointer-events:none;
+    opacity:0;translate:0 calc(-100% + 16px);pointer-events:none;
     transition:opacity .8s ease, translate .8s ease;
   }
-  footer.show{opacity:1;translate:0 0;pointer-events:auto}
+  footer.show{opacity:1;translate:0 -100%;pointer-events:auto}
   footer a{color:var(--text-soft)}
 
   @media (prefers-reduced-motion:reduce){
@@ -445,6 +445,7 @@
     var h = Math.max(innerHeight, dim || 0);
     document.documentElement.style.setProperty('--sceneH', h + 'px');
     document.documentElement.style.setProperty('--journeyH', Math.round(h * 3.6) + 'px');
+    document.documentElement.style.setProperty('--uiB', innerHeight + 'px');
   }
   function measure(){
     jTop = journey.offsetTop;
@@ -499,7 +500,7 @@
     intro.classList.toggle('hide', raw > .006);
     var pr = Math.min(1, Math.max(0, raw / .80));
     var landed = current >= .993;
-    foot.classList.toggle('show', landed);
+    foot.classList.toggle('show', landed && raw >= .90);
     var seg = pr >= 7/8 ? 2 : pr >= 3/8 ? 1 : 0;
     cards.forEach(function(c, i){ c.classList.toggle('show', i === seg && raw > .012); });
     dots.forEach(function(d, i){ d.classList.toggle('on', i === seg); });
