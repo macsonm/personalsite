@@ -83,7 +83,7 @@
 
   .card{
     position:absolute;z-index:40;
-    left:50%;top:calc(var(--uiB,100svh) + 20px);translate:-50% calc(-100% + 28px);scale:.985;
+    left:50%;top:min(calc(var(--uiB,100svh) + 20px), calc(var(--liveB,100svh) - 12px));translate:-50% calc(-100% + 28px);scale:.985;
     width:min(470px,calc(100% - 36px));
     background:rgba(20,26,38,.55);
     border:1px solid rgba(255,255,255,.12);
@@ -95,7 +95,7 @@
     opacity:0;pointer-events:none;
     transition:opacity .5s cubic-bezier(.32,.72,.25,1),
                translate .5s cubic-bezier(.32,.72,.25,1),
-               scale .5s cubic-bezier(.32,.72,.25,1);
+               scale .5s cubic-bezier(.32,.72,.25,1), top .45s ease;
   }
   .card.show{opacity:1;translate:-50% -100%;scale:1;pointer-events:auto}
   .card h2{font-size:25px;font-weight:700;letter-spacing:-.022em;line-height:1.15;margin-bottom:8px}
@@ -145,10 +145,10 @@
   .progress span.on{background:rgba(255,255,255,.85);scale:1.2}
 
   footer{
-    position:absolute;left:0;right:0;top:calc(var(--uiB,100svh) + 60px);z-index:41;
+    position:absolute;left:0;right:0;top:min(calc(var(--uiB,100svh) + 60px), calc(var(--liveB,100svh) + 34px));z-index:41;
     text-align:center;font-size:12px;color:var(--text-soft);
     opacity:0;translate:0 calc(-100% + 16px);pointer-events:none;
-    transition:opacity .8s ease, translate .8s ease;
+    transition:opacity .8s ease, translate .8s ease, top .45s ease;
   }
   footer.show{opacity:1;translate:0 -100%;pointer-events:auto}
   footer a{color:var(--text-soft)}
@@ -451,6 +451,7 @@
     document.documentElement.style.setProperty('--sceneH', h + 'px');
     document.documentElement.style.setProperty('--journeyH', Math.round(h * 3.6) + 'px');
     document.documentElement.style.setProperty('--uiB', innerHeight + 'px');
+    document.documentElement.style.setProperty('--liveB', innerHeight + 'px');
   }
   function measure(){
     jTop = journey.offsetTop;
@@ -458,6 +459,7 @@
     lastW = innerWidth; lastH = innerHeight;
   }
   function onResize(){
+    document.documentElement.style.setProperty('--liveB', innerHeight + 'px');
     var dh = Math.abs(innerHeight - lastH);
     if (innerWidth === lastW && dh < 260) return;
     measure(); onScroll();
