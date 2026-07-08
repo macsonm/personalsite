@@ -32,13 +32,13 @@
   }
   .brand .ig{width:17px;height:17px}
 
-  .journey{height:360vh;position:relative}
+  .journey{height:var(--journeyH,360vh);position:relative}
   .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
   .stage::after{
     content:"";position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(120% 90% at 50% 42%, transparent 60%, rgba(0,0,0,.5) 100%);
   }
-  svg.space{position:absolute;inset:0;width:100%;height:100%;will-change:transform}
+  svg.space{position:absolute;top:0;left:0;width:100%;height:var(--sceneH,100svh);will-change:transform}
   @media (orientation: landscape){
     svg.space .world{transform:translate(130px,200px) scale(0.74)}
   }
@@ -365,7 +365,7 @@
 </div>
 
 <footer>
-  <a href="https://myprivate.pics/6U4MJR.jpg">🔒 my secrets</a>
+  <a href="https://myprivate.pics/EHQ6IE.jpg">🔒 my secrets</a>
 </footer>
 
 <script>
@@ -439,6 +439,14 @@
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var target = 0, current = 0, rafId = null, raw = 0, landedAt = 0;
   var jTop = 0, jMax = 0, jEnd = 0, lastW = 0, lastH = 0;
+  function setSceneH(){
+    var portrait = matchMedia('(orientation: portrait)').matches;
+    var dim = portrait ? Math.max(screen.width, screen.height)
+                       : Math.min(screen.width, screen.height);
+    var h = Math.max(innerHeight, dim || 0);
+    document.documentElement.style.setProperty('--sceneH', h + 'px');
+    document.documentElement.style.setProperty('--journeyH', Math.round(h * 3.6) + 'px');
+  }
   function measure(){
     jTop = journey.offsetTop;
     jMax = journey.offsetHeight - innerHeight;
@@ -447,7 +455,7 @@
   }
   function onResize(){
     var dh = Math.abs(innerHeight - lastH);
-    if (innerWidth === lastW && dh < 140) return;
+    if (innerWidth === lastW && dh < 260) return;
     measure(); onScroll();
   }
 
@@ -527,7 +535,8 @@
 
   addEventListener('scroll', onScroll, {passive:true});
   addEventListener('resize', onResize, {passive:true});
-  addEventListener('orientationchange', function(){ measure(); onScroll(); });
+  addEventListener('orientationchange', function(){ setSceneH(); measure(); onScroll(); });
+  setSceneH();
   measure();
   setPlane(0);
   setLandmarks(0);
