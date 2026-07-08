@@ -83,7 +83,7 @@
 
   .card{
     position:absolute;z-index:40;
-    left:50%;top:calc(var(--uiB,100svh) - 52px);translate:-50% calc(-100% + 28px);scale:.985;
+    left:50%;top:calc(var(--uiB,100svh) + 20px);translate:-50% calc(-100% + 28px);scale:.985;
     width:min(470px,calc(100% - 36px));
     background:rgba(20,26,38,.55);
     border:1px solid rgba(255,255,255,.12);
@@ -145,13 +145,18 @@
   .progress span.on{background:rgba(255,255,255,.85);scale:1.2}
 
   footer{
-    position:absolute;left:0;right:0;top:calc(var(--uiB,100svh) - 12px);z-index:41;
+    position:absolute;left:0;right:0;top:calc(var(--uiB,100svh) + 60px);z-index:41;
     text-align:center;font-size:12px;color:var(--text-soft);
     opacity:0;translate:0 calc(-100% + 16px);pointer-events:none;
     transition:opacity .8s ease, translate .8s ease;
   }
   footer.show{opacity:1;translate:0 -100%;pointer-events:auto}
   footer a{color:var(--text-soft)}
+
+  @media (orientation: landscape){
+    .card{top:calc(var(--uiB,100svh) - 72px)}
+    footer{top:calc(var(--uiB,100svh) - 18px)}
+  }
 
   @media (prefers-reduced-motion:reduce){
     .tw,.chev,.clouds{animation:none}
