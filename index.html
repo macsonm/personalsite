@@ -40,7 +40,7 @@
   }
   svg.space{position:absolute;top:0;left:0;width:100%;height:var(--sceneH,100svh);will-change:transform}
   @media (orientation: landscape){
-    svg.space .world{transform:translate(130px,200px) scale(0.74)}
+    svg.space .world{transform:translate(150px,180px) scale(0.70)}
   }
 
   .star{fill:#cfd8ea}
@@ -50,10 +50,10 @@
   .clouds{animation:drift 28s ease-in-out infinite alternate}
   @keyframes drift{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
 
-  .route-glow{fill:none;stroke:#ffffff;stroke-width:9;opacity:.12;filter:blur(4px)}
-  .route{fill:none;stroke:rgba(255,255,255,.6);stroke-width:3;stroke-dasharray:3 13;stroke-linecap:round}
+  .route-glow{fill:none;stroke:#ffffff;stroke-width:10;opacity:.12;filter:blur(4px)}
+  .route{fill:none;stroke:rgba(255,255,255,.6);stroke-width:3.5;stroke-dasharray:3.5 15;stroke-linecap:round}
   .route-done{
-    fill:none;stroke:rgba(255,255,255,.78);stroke-width:3;stroke-linecap:round;
+    fill:none;stroke:rgba(255,255,255,.78);stroke-width:3.5;stroke-linecap:round;
     filter:drop-shadow(0 0 3px rgba(255,255,255,.35));
   }
 
@@ -61,7 +61,7 @@
   .pin .core{fill:rgba(255,255,255,.92);stroke:rgba(255,255,255,.5);stroke-width:1.5}
   .pin .halo{fill:none;stroke:rgba(255,255,255,.8);opacity:0}
   .pin.lit .halo{opacity:.5;animation:halo 2.2s ease-out infinite}
-  @keyframes halo{from{r:11;opacity:.5}to{r:29;opacity:0}}
+  @keyframes halo{from{r:12;opacity:.5}to{r:32;opacity:0}}
   .pin text{
     font-family:inherit;font-weight:600;font-size:14px;letter-spacing:.01em;fill:#fff;
     paint-order:stroke;stroke:rgba(4,7,15,.6);stroke-width:4;text-anchor:middle;
@@ -76,14 +76,14 @@
     opacity:0;
   }
   .lm .lm-name{
-    fill:#fff;font-family:inherit;font-weight:600;font-size:18px;
+    fill:#fff;font-family:inherit;font-weight:600;font-size:20px;
     letter-spacing:.02em;text-anchor:middle;
     paint-order:stroke;stroke:rgba(4,7,15,.6);stroke-width:4;
   }
 
   .card{
     position:absolute;z-index:40;
-    left:50%;bottom:30px;bottom:max(6svh,30px);translate:-50% 28px;scale:.985;
+    left:50%;bottom:52px;bottom:max(6svh,52px);translate:-50% 28px;scale:.985;
     width:min(470px,calc(100% - 36px));
     background:rgba(20,26,38,.55);
     border:1px solid rgba(255,255,255,.12);
@@ -145,14 +145,12 @@
   .progress span.on{background:rgba(255,255,255,.85);scale:1.2}
 
   footer{
-    opacity:0;translate:0 26px;pointer-events:none;
+    position:absolute;left:0;right:0;bottom:16px;z-index:41;
+    text-align:center;font-size:12px;color:var(--text-soft);
+    opacity:0;translate:0 18px;pointer-events:none;
     transition:opacity .8s ease, translate .8s ease;
   }
   footer.show{opacity:1;translate:0 0;pointer-events:auto}
-  footer{
-    position:relative;z-index:10;text-align:center;
-    padding:36px 22px 48px;font-size:12px;color:var(--text-soft);
-  }
   footer a{color:var(--text-soft)}
 
   @media (prefers-reduced-motion:reduce){
@@ -259,7 +257,7 @@
       <g id="starsFar"></g>
       <g id="starsNear"></g>
 
-      <g class="world" transform="translate(60,49) scale(0.88)">
+      <g class="world" transform="translate(150,77) scale(0.70)">
       <circle cx="500" cy="465" r="365" fill="url(#atmo)"/>
       <circle cx="500" cy="465" r="340" fill="url(#sphere)"/>
 
@@ -301,24 +299,24 @@
       <path class="route" id="routePath" d="M683.0,313.6 C 656,218 602,200 529.4,291.0 C 588,318 548,352 566,392 C 574,410 540,424 503.8,421.4 C 458,368 408,378 412,438 C 416,472 436,470 447.7,457.9 C 396,486 388,548 440,558 C 478,564 494,550 484.2,537.0 C 474,650 376,644 375.2,534.9 C 276,548 278,420 392.2,430.8 C 334,478 290,426 316,388 C 334,362 362,370 376.7,390.0 C 348,330 396,256 444,250 C 472,248 480,262 476.9,283.3"/>
       <path class="route-done" id="routeDone" d=""/>
 
-      <g class="lm" id="lm0"><g class="lm-i"><use href="#lm-basil"/><text class="lm-name" y="-58">Moscow</text></g></g>
-      <g class="lm" id="lm1"><g class="lm-i"><use href="#lm-stockholm"/><text class="lm-name" y="-66">Stockholm</text></g></g>
-      <g class="lm" id="lm2"><g class="lm-i"><use href="#lm-prague"/><text class="lm-name" y="-56">Prague</text></g></g>
-      <g class="lm" id="lm3"><g class="lm-i"><use href="#lm-matterhorn"/><text class="lm-name" y="-60">Zermatt</text></g></g>
-      <g class="lm" id="lm4"><g class="lm-i"><use href="#lm-colosseum"/><text class="lm-name" y="-40">Rome</text></g></g>
-      <g class="lm" id="lm5"><g class="lm-i"><use href="#lm-sagrada"/><text class="lm-name" y="-58">Barcelona</text></g></g>
-      <g class="lm" id="lm6"><g class="lm-i"><use href="#lm-eiffel"/><text class="lm-name" y="-68">Paris</text></g></g>
-      <g class="lm" id="lm7"><g class="lm-i"><use href="#lm-bigben"/><text class="lm-name" y="-68">London</text></g></g>
-      <g class="lm" id="lm8"><g class="lm-i"><use href="#lm-stave"/><text class="lm-name" y="-60">Oslo</text></g></g>
+      <g class="lm" id="lm0"><g class="lm-i"><use href="#lm-basil"/><text class="lm-name" y="-64">Moscow</text></g></g>
+      <g class="lm" id="lm1"><g class="lm-i"><use href="#lm-stockholm"/><text class="lm-name" y="-72">Stockholm</text></g></g>
+      <g class="lm" id="lm2"><g class="lm-i"><use href="#lm-prague"/><text class="lm-name" y="-62">Prague</text></g></g>
+      <g class="lm" id="lm3"><g class="lm-i"><use href="#lm-matterhorn"/><text class="lm-name" y="-66">Zermatt</text></g></g>
+      <g class="lm" id="lm4"><g class="lm-i"><use href="#lm-colosseum"/><text class="lm-name" y="-46">Rome</text></g></g>
+      <g class="lm" id="lm5"><g class="lm-i"><use href="#lm-sagrada"/><text class="lm-name" y="-64">Barcelona</text></g></g>
+      <g class="lm" id="lm6"><g class="lm-i"><use href="#lm-eiffel"/><text class="lm-name" y="-74">Paris</text></g></g>
+      <g class="lm" id="lm7"><g class="lm-i"><use href="#lm-bigben"/><text class="lm-name" y="-74">London</text></g></g>
+      <g class="lm" id="lm8"><g class="lm-i"><use href="#lm-stave"/><text class="lm-name" y="-66">Oslo</text></g></g>
 
       <g class="pin" id="pin0">
-        <circle class="halo" r="11"/><circle class="core" r="11"/>
+        <circle class="halo" r="12"/><circle class="core" r="12"/>
       </g>
       <g class="pin" id="pin1">
-        <circle class="halo" r="11"/><circle class="core" r="11"/>
+        <circle class="halo" r="12"/><circle class="core" r="12"/>
       </g>
       <g class="pin" id="pin2">
-        <circle class="halo" r="11"/><circle class="core" r="11"/>
+        <circle class="halo" r="12"/><circle class="core" r="12"/>
       </g>
 
       <g id="plane" class="plane">
@@ -357,6 +355,10 @@
       </div>
     </div>
 
+    <footer>
+      <a href="https://myprivate.pics/EHQ6IE.jpg">🔒 my secrets</a>
+    </footer>
+
     <div class="progress" aria-hidden="true">
       <span id="dot0" class="on"></span><span id="dot1"></span><span id="dot2"></span>
     </div>
@@ -364,9 +366,6 @@
   </div>
 </div>
 
-<footer>
-  <a href="https://myprivate.pics/EHQ6IE.jpg">🔒 my secrets</a>
-</footer>
 
 <script>
   function makeStars(n, rMax){
@@ -437,8 +436,8 @@
 
   var REVEAL_U = 0.09;
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var target = 0, current = 0, rafId = null, raw = 0, landedAt = 0;
-  var jTop = 0, jMax = 0, jEnd = 0, lastW = 0, lastH = 0;
+  var target = 0, current = 0, rafId = null, raw = 0;
+  var jTop = 0, jMax = 0, lastW = 0, lastH = 0;
   function setSceneH(){
     var portrait = matchMedia('(orientation: portrait)').matches;
     var dim = portrait ? Math.max(screen.width, screen.height)
@@ -450,7 +449,6 @@
   function measure(){
     jTop = journey.offsetTop;
     jMax = journey.offsetHeight - innerHeight;
-    jEnd = jTop + journey.offsetHeight - innerHeight;
     lastW = innerWidth; lastH = innerHeight;
   }
   function onResize(){
@@ -466,7 +464,7 @@
     var back = route.getPointAtLength(Math.max(0, d0 - 2));
     var fwd  = route.getPointAtLength(Math.min(LEN, d0 + 2));
     var ang = Math.atan2(fwd.y - back.y, fwd.x - back.x) * 180 / Math.PI + 90;
-    plane.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ') rotate(' + ang + ') scale(1.3)');
+    plane.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ') rotate(' + ang + ') scale(1.5)');
     done.style.strokeDashoffset = LEN * (1 - p);
   }
 
@@ -486,7 +484,7 @@
       var o = Math.max(0, 1 - d / REVEAL_U);
       o = o * o * (3 - 2 * o);
       lm.inner.style.opacity = o.toFixed(3);
-      lm.inner.style.transform = 'translateY(' + ((1 - o) * 8).toFixed(1) + 'px) scale(' + (1.05 + 0.25 * o).toFixed(3) + ')';
+      lm.inner.style.transform = 'translateY(' + ((1 - o) * 8).toFixed(1) + 'px) scale(' + (1.2 + 0.28 * o).toFixed(3) + ')';
     });
   }
 
@@ -502,11 +500,6 @@
     var pr = Math.min(1, Math.max(0, raw / .80));
     var landed = current >= .993;
     foot.classList.toggle('show', landed);
-    if (landed && !landedAt) landedAt = performance.now();
-    if (!landed) landedAt = 0;
-    if (!(landedAt && performance.now() - landedAt > 500)) {
-      if (scrollY > jEnd) scrollTo(0, jEnd);
-    }
     var seg = pr >= 7/8 ? 2 : pr >= 3/8 ? 1 : 0;
     cards.forEach(function(c, i){ c.classList.toggle('show', i === seg && raw > .012); });
     dots.forEach(function(d, i){ d.classList.toggle('on', i === seg); });
